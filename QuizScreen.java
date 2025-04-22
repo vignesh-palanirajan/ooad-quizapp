@@ -1,12 +1,15 @@
 import dao.QuestionDAO;
 import dao.ScoreDAO;
 import models.Question;
-import java.util.ArrayList;
+import strategy.*;
+import factory.ScoringStrategyFactory;
+
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuizScreen extends JFrame {
@@ -18,9 +21,11 @@ public class QuizScreen extends JFrame {
     private int wrongAnswers = 0;
     private int userId;
     private String scoringType;
-    private List<Question> incorrectQuestions = new ArrayList<>(); // Track incorrect questions
-    private List<String> selectedOptions = new ArrayList<>(); // Track selected options for incorrect questions
-    private List<Question> skippedQuestions = new ArrayList<>(); // Track skipped questions
+    private ScoringStrategy scoringStrategy;
+
+    private List<Question> incorrectQuestions = new ArrayList<>();
+    private List<String> selectedOptions = new ArrayList<>();
+    private List<Question> skippedQuestions = new ArrayList<>();
 
     private JLabel questionLabel;
     private JRadioButton optionA, optionB, optionC, optionD;
@@ -30,17 +35,20 @@ public class QuizScreen extends JFrame {
     private long questionStartTime;
     private Timer timer;
     private int timeRemaining = 30;
+
     public QuizScreen(int userId, String scoringType) {
         this.userId = userId;
         this.scoringType = scoringType;
         questions = QuestionDAO.getRandomQuestions(10);
+
+        scoringStrategy = ScoringStrategyFactory.getScoringStrategy(scoringType);
+
 
         setTitle("Quiz");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Background image panel with full screen stretch
         JLabel background = new JLabel(new ImageIcon("bg4.jpg")) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -52,14 +60,13 @@ public class QuizScreen extends JFrame {
         setContentPane(background);
         background.setLayout(new GridBagLayout());
 
-        // Custom JPanel with rounded corners and fixed size
         JPanel centerBox = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(173, 216, 230, 200)); // Slightly faded light blue
+                g2.setColor(new Color(173, 216, 230, 200));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
             }
 
@@ -73,7 +80,6 @@ public class QuizScreen extends JFrame {
         centerBox.setMaximumSize(new Dimension(800, 500));
         centerBox.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Timer label
         timerLabel = new JLabel("", SwingConstants.LEFT);
         timerLabel.setFont(new Font("Arial", Font.BOLD, 18));
         timerLabel.setForeground(Color.BLACK);
@@ -85,7 +91,6 @@ public class QuizScreen extends JFrame {
         centerBox.add(timerLabel);
         centerBox.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        // Question label
         questionLabel = new JLabel("", SwingConstants.CENTER);
         questionLabel.setFont(new Font("Arial", Font.BOLD, 27));
         questionLabel.setForeground(Color.BLACK);
@@ -93,7 +98,6 @@ public class QuizScreen extends JFrame {
         centerBox.add(questionLabel);
         centerBox.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // Options
         JPanel optionsPanel = new JPanel(new GridLayout(4, 1, 10, 10));
         optionA = new JRadioButton();
         optionB = new JRadioButton();
@@ -120,7 +124,6 @@ public class QuizScreen extends JFrame {
         centerBox.add(optionsPanel);
         centerBox.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // Next button
         nextButton = new JButton("Next");
         nextButton.setFont(new Font("Arial", Font.BOLD, 20));
         nextButton.setBackground(new Color(70, 130, 180));
@@ -139,7 +142,7 @@ public class QuizScreen extends JFrame {
         });
         centerBox.add(nextButton);
 
-        background.add(centerBox); // Add centerBox to center of background
+        background.add(centerBox);
 
         displayQuestion();
         setVisible(true);
@@ -193,15 +196,13 @@ public class QuizScreen extends JFrame {
         }
     }
 
-    // Constructor and other methods remain the same
-
     private void checkAnswer() {
         if (currentQuestionIndex < questions.size()) {
             Question q = questions.get(currentQuestionIndex);
             String correct = q.getCorrectOption();
             String selectedOption = "";
-
             boolean selected = false;
+
             if (optionA.isSelected()) {
                 selected = true;
                 selectedOption = "A";
@@ -225,25 +226,16 @@ public class QuizScreen extends JFrame {
                     selectedOptions.add(selectedOption);
                 }
             } else {
-                // Question was skipped
                 skippedQuestions.add(q);
             }
 
-            if ("time".equals(scoringType)) {
-                long timeTaken = System.currentTimeMillis() - questionStartTime;
-                if (timeTaken <= 30000 && selectedCorrect) {
-                    score += 1;
-                }
-            } else if ("simple".equals(scoringType)) {
-                if (selectedCorrect) score++;
-            } else if ("negative".equals(scoringType)) {
-                if (selectedCorrect) {
-                    score++;
-                    correctAnswers++;
-                } else if (selected) {
-                    score--;
-                    wrongAnswers++;
-                }
+            long timeTaken = System.currentTimeMillis() - questionStartTime;
+            int deltaScore = scoringStrategy.calculateScore(q, selectedOption, timeTaken);
+            score += deltaScore;
+
+            if ("negative".equals(scoringType)) {
+                if (deltaScore == 1) correctAnswers++;
+                else if (deltaScore == -1) wrongAnswers++;
             }
         }
     }
