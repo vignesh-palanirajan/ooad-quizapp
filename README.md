@@ -1,20 +1,20 @@
-# 🧠 QuizApplication  
+# QuizApplication  
 A Java-based GUI Quiz System with Multiple Scoring Modes and User Roles
 
-## 📝 Overview  
+## Overview  
 **QuizApplication** is a desktop-based quiz system built using Java Swing. It supports two user roles: **Admin** and **Participant**. Participants can sign up, log in, edit profiles, and engage in quizzes with flexible scoring options. Admins can add new questions and monitor participant scores. The application also tracks historical data and displays real-time scoreboards.
 
 ---
 
-## 🌟 Features  
+## Features  
 
-### 👤 User Roles
+### User Roles
 - **Participant**
   - Signup, Login, and Profile Editing
   - Choose Scoring Modes:  
-    - 🟢 Simple Scoring  
-    - 🔴 Negative Marking  
-    - ⏱️ Time-Based Scoring  
+    - Simple Scoring  
+    - Negative Marking  
+    - Time-Based Scoring  
   - Play Quizzes and View Detailed Scores
   - Review Score Breakdown and See Where Marks Were Lost
   - Track Previous Scores and Quiz History  
@@ -25,21 +25,21 @@ A Java-based GUI Quiz System with Multiple Scoring Modes and User Roles
   - Add Quiz Questions  
   - View All Participant Scores  
 
-### 💻 Interface
+### Interface
 - Clean and interactive GUI developed using Java Swing  
 - Background images and styled components for improved UX  
 
-### 🔒 Authentication & Profiles
+### Authentication & Profiles
 - Username and password-based login  
 - Profile management with editing options  
 
-### 📊 Scoreboard and History
+### Scoreboard and History
 - View leaderboard rankings  
 - Track and review personal or overall performance  
 
 ---
 
-## 💻 Technology  
+## Technology  
 
 | Technology | Purpose                        |
 |------------|--------------------------------|
@@ -49,20 +49,20 @@ A Java-based GUI Quiz System with Multiple Scoring Modes and User Roles
 
 ---
 
-## ⚙️ Functional Requirements  
+## Functional Requirements  
 
-### ✅ Authentication  
+### Authentication  
 - Secure login for Admin and Participants  
 - User credentials stored and validated via SQL  
 
-### ✅ Quiz Operations  
+### Quiz Operations  
 - Play quiz in different scoring modes  
 - Add questions (Admin only)  
 - Score tracking, history viewing, scoreboard access  
 
 ---
 
-## 📐 Non-Functional Requirements  
+## Non-Functional Requirements  
 
 - **Usability**: Intuitive and responsive GUI  
 - **Performance**: Fast access to quiz data and history  
@@ -71,7 +71,7 @@ A Java-based GUI Quiz System with Multiple Scoring Modes and User Roles
 
 ---
 
-## 🔧 Setup  
+## Setup  
 
 1. **Clone the Repository**  
    ```bash
@@ -86,7 +86,7 @@ A Java-based GUI Quiz System with Multiple Scoring Modes and User Roles
   Open the project in your Java IDE (e.g., IntelliJ IDEA or Eclipse)
   Run LoginForm.java 
 
-## ▶️ Usage
+## Usage
 - Launch application and log in as Admin or Participant
 - Participants:
     - Choose a quiz mode
@@ -96,12 +96,12 @@ A Java-based GUI Quiz System with Multiple Scoring Modes and User Roles
     - Add new questions
     - View results of all users
  
-## 🚨 Error Handling
+## Error Handling
 - **Invalid Logins**: Prompt messages for incorrect credentials
 - **Empty Fields**: Prevents actions with missing data
 - **Duplicate Users**: Restricts registration of existing usernames
 
-## 🤝 Contributors
+## Contributors
 - **Trishita Umapathi** – trishitaumapathi@gmail.com
 - **Deepak Velmurugan** – imdeepakv@gmail.com
 - **Vandana J** – vandanaj0110@gmail.com
