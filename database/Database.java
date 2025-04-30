@@ -9,8 +9,8 @@ public class Database {
     private Connection connection;
 
     private static final String URL = "jdbc:mysql://localhost:3306/quizapp";
-    private static final String USER = "deepak";
-    private static final String PASSWORD = "deepak123!";
+    private static final String USER = "root";
+    private static final String PASSWORD = "root";
 
     private Database() throws SQLException {
         this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
